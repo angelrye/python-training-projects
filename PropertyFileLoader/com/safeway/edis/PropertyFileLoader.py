@@ -11,7 +11,6 @@ class PropertyFileLoader:
                 self.config.update(
                     {f'{self.get_text_after_split(key_value, 0)}': f'{self.get_text_after_split(key_value, 1)}'})
 
-
     def __yeild_line__(self, property_file):
         '''
         Returns a generator for the opened file and yields line by line.
@@ -19,10 +18,7 @@ class PropertyFileLoader:
         returns ValueError if property file is malformed.
         '''
         for line in property_file:
-            if line in ['\n', '\n\r']:
-                continue
-
-            if (line.strip()[0] == '#'):
+            if (line in ['\n', '\n\r']) or (len(line.strip()) == 0) or (line.strip()[0] == '#'):
                 continue
 
             if (int(line.find('=')) < 0):
