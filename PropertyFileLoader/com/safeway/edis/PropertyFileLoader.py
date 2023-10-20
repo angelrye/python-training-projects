@@ -34,9 +34,6 @@ class PropertyFileLoader:
 
             yield line
 
-    def __get_text_after_split__(self, text, index): return str(
-        text.split('=')[index]).strip()
-
     def __create_property_dict__(self, text):
         key, value = text.split('=')
         return {f'{key.strip()}': f'{value.strip()}'}
