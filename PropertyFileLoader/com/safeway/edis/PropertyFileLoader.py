@@ -1,15 +1,23 @@
+import io
+
+
 class PropertyFileLoader:
 
-    def __init__(self, dir_location):
-        self.dir_location = dir_location
-        self.config = dict()
-        self.__load_config__()
+    def __init__(self, file):
+        '''
+        Accepts absolute or relative file path or a Text File object 
+        '''
+        self.__file__ = file
+        self.properties = dict()
+        self.__load_properties__()
 
-    def __load_config__(self):
-        with open(self.dir_location) as prop:
-            for key_value in self.__yeild_line__(prop):
-                self.config.update(
-                    {f'{self.get_text_after_split(key_value, 0)}': f'{self.get_text_after_split(key_value, 1)}'})
+    def __load_properties__(self):
+        if isinstance(self.__file__, str):
+            with open(self.__file__) as file:
+                self.__update_properties__(file)
+
+        elif isinstance(self.__file__, io.TextIOWrapper):
+            self.__update_properties__(self.__file__)
 
     def __yeild_line__(self, property_file):
         '''
@@ -26,5 +34,14 @@ class PropertyFileLoader:
 
             yield line
 
-    def get_text_after_split(self, text, index): return str(
+    def __get_text_after_split__(self, text, index): return str(
         text.split('=')[index]).strip()
+
+    def __create_property_dict__(self, text):
+        key, value = text.split('=')
+        return {f'{key.strip()}': f'{value.strip()}'}
+
+    def __update_properties__(self, file):
+        for key_value in self.__yeild_line__(file):
+            self.properties.update(
+                self.__create_property_dict__(key_value))
